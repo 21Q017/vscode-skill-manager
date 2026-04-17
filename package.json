@@ -1,0 +1,113 @@
+{
+  "name": "skill-manager",
+  "displayName": "Skill Manager",
+  "description": "Manage Claude skill packages with presets | 管理 Claude 技能包，支持技能组合",
+  "version": "0.3.0",
+  "publisher": "Q1anfang2",
+  "engines": { "vscode": "^1.80.0" },
+  "categories": ["Other"],
+  "keywords": ["claude", "skill", "ai", "anthropic", "preset"],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Skill Manager",
+      "properties": {
+        "skillManager.installDir": {
+          "type": "string",
+          "default": "",
+          "description": "Skill install directory. Default: <workspace>/.github/skills | 技能安装目录"
+        },
+        "skillManager.overwriteExisting": {
+          "type": "string",
+          "enum": ["ask", "always", "never"],
+          "default": "ask",
+          "description": "Overwrite policy | 覆盖策略"
+        },
+        "skillManager.language": {
+          "type": "string",
+          "enum": ["auto", "en", "zh-cn"],
+          "default": "auto",
+          "description": "UI language | 界面语言",
+          "enumDescriptions": ["Auto-detect | 自动检测", "English", "中文"]
+        }
+      }
+    },
+    "commands": [
+      { "command": "skillManager.uploadSkill",      "title": "Skill Manager: Upload | 上传安装",           "icon": "$(cloud-upload)" },
+      { "command": "skillManager.refresh",           "title": "Skill Manager: Refresh | 刷新",             "icon": "$(refresh)" },
+      { "command": "skillManager.openInstallDir",    "title": "Skill Manager: Reveal Dir | 打开目录",      "icon": "$(folder-opened)" },
+      { "command": "skillManager.deleteSkill",       "title": "Skill Manager: Delete Skill | 删除技能",    "icon": "$(trash)" },
+      { "command": "skillManager.openSkill",         "title": "Skill Manager: Open SKILL.md | 打开",       "icon": "$(go-to-file)" },
+      { "command": "skillManager.setInstallDir",     "title": "Skill Manager: Set Dir | 设置目录" },
+      { "command": "skillManager.exportSkill",       "title": "Skill Manager: Export | 导出",              "icon": "$(archive)" },
+      { "command": "skillManager.installFromFolder",  "title": "Skill Manager: From Folder | 从文件夹",    "icon": "$(folder)" },
+      { "command": "skillManager.installFromExplorer", "title": "Install Skill | 安装技能包",              "category": "Skill Manager" },
+      { "command": "skillManager.exportFolderFromExplorer", "title": "Export .skill | 导出 .skill",        "category": "Skill Manager" },
+      { "command": "skillManager.toggleSkill",       "title": "Skill Manager: Toggle | 切换启用",          "icon": "$(activate-breakpoints)" },
+      { "command": "skillManager.selectSkills",      "title": "Skill Manager: Select Skills | 选择技能",   "icon": "$(checklist)" },
+      { "command": "skillManager.enableAllSkills",   "title": "Skill Manager: Enable All | 全部启用",      "icon": "$(check-all)" },
+      { "command": "skillManager.disableAllSkills",  "title": "Skill Manager: Disable All | 全部禁用",     "icon": "$(close-all)" },
+      { "command": "skillManager.switchLanguage",    "title": "Skill Manager: Language | 语言",            "icon": "$(globe)" },
+      { "command": "skillManager.createPreset",      "title": "Skill Manager: New Preset | 新建组合",      "icon": "$(add)" },
+      { "command": "skillManager.applyPreset",       "title": "Skill Manager: Apply Preset | 应用组合",    "icon": "$(layers-active)" },
+      { "command": "skillManager.editPreset",        "title": "Skill Manager: Edit Preset | 编辑组合",     "icon": "$(edit)" },
+      { "command": "skillManager.renamePreset",      "title": "Skill Manager: Rename Preset | 重命名组合", "icon": "$(symbol-text)" },
+      { "command": "skillManager.deletePreset",      "title": "Skill Manager: Delete Preset | 删除组合",   "icon": "$(trash)" },
+      { "command": "skillManager.quickPreset",       "title": "Skill Manager: Quick Switch | 快速切换组合","icon": "$(zap)" }
+    ],
+    "viewsContainers": {
+      "activitybar": [{
+        "id": "skillManager",
+        "title": "Skill Manager",
+        "icon": "$(library)"
+      }]
+    },
+    "views": {
+      "skillManager": [{
+        "id": "skillManager.skillsView",
+        "name": "Skills",
+        "icon": "$(library)"
+      }]
+    },
+    "viewsWelcome": [{
+      "view": "skillManager.skillsView",
+      "contents": "No skills installed. | 还没有安装技能。\n\n[Upload | 上传](command:skillManager.uploadSkill)\n[From Folder | 从文件夹](command:skillManager.installFromFolder)\n[Set Dir | 设置目录](command:skillManager.setInstallDir)\n\nDrag files here. | 拖拽文件到此处。"
+    }],
+    "menus": {
+      "view/title": [
+        { "command": "skillManager.uploadSkill",     "when": "view == skillManager.skillsView", "group": "navigation@1" },
+        { "command": "skillManager.createPreset",    "when": "view == skillManager.skillsView", "group": "navigation@2" },
+        { "command": "skillManager.selectSkills",    "when": "view == skillManager.skillsView", "group": "navigation@3" },
+        { "command": "skillManager.refresh",         "when": "view == skillManager.skillsView", "group": "navigation@4" },
+        { "command": "skillManager.openInstallDir",  "when": "view == skillManager.skillsView", "group": "navigation@5" },
+        { "command": "skillManager.enableAllSkills", "when": "view == skillManager.skillsView", "group": "1_selection@1" },
+        { "command": "skillManager.disableAllSkills","when": "view == skillManager.skillsView", "group": "1_selection@2" },
+        { "command": "skillManager.switchLanguage",  "when": "view == skillManager.skillsView", "group": "2_settings@1" }
+      ],
+      "view/item/context": [
+        { "command": "skillManager.openSkill",       "when": "view == skillManager.skillsView && viewItem =~ /^skill/",          "group": "inline@1" },
+        { "command": "skillManager.exportSkill",     "when": "view == skillManager.skillsView && viewItem =~ /^skill/",          "group": "inline@2" },
+        { "command": "skillManager.deleteSkill",     "when": "view == skillManager.skillsView && viewItem =~ /^skill/",          "group": "inline@3" },
+        { "command": "skillManager.editPreset",      "when": "view == skillManager.skillsView && viewItem =~ /^preset($|-)/",    "group": "inline@1" },
+        { "command": "skillManager.renamePreset",    "when": "view == skillManager.skillsView && viewItem =~ /^preset($|-)/",    "group": "inline@2" },
+        { "command": "skillManager.deletePreset",    "when": "view == skillManager.skillsView && viewItem =~ /^preset($|-)/",    "group": "inline@3" }
+      ],
+      "explorer/context": [
+        { "command": "skillManager.installFromExplorer",      "when": "resourceExtname == .skill || resourceExtname == .zip", "group": "skillManager@1" },
+        { "command": "skillManager.exportFolderFromExplorer", "when": "explorerResourceIsFolder",                             "group": "skillManager@2" }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.2.0"
+  }
+}
